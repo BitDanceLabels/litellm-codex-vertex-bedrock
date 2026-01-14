@@ -1,0 +1,14 @@
+services:
+  litellm:
+    volumes:
+      - ./config.vertex.yaml:/app/config.yaml
+      - ./secrets/vertex-sa.json:/secrets/vertex-sa.json:ro
+    command:
+      - "--config=/app/config.yaml"
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /secrets/vertex-sa.json
+      VERTEXAI_LOCATION: ${VERTEXAI_LOCATION}
+      VERTEXAI_PROJECT: ${VERTEXAI_PROJECT}
+      GCS_BUCKET_NAME: ${GCS_BUCKET_NAME}
+      GCS_PATH_SERVICE_ACCOUNT: /secrets/vertex-sa.json
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}

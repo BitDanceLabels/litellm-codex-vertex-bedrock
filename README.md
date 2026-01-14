@@ -381,6 +381,43 @@ Support for more providers. Missing a provider or LLM Platform, raise a [feature
 2. Install dependencies `npm install`
 3. Run `npm run dev` to start the dashboard
 
+## Vertex AI (Proxy + Docker) Quickstart
+
+This repo can run LiteLLM Proxy with Vertex AI for chat/completions, embeddings, images, audio, batches, files, and rerank.
+
+### 1) Prepare credentials
+Create a GCP service account with Vertex AI permissions and download JSON key.
+Save it to: `secrets/vertex-sa.json` (do not commit this file).
+
+### 2) Configure env
+Copy `.env.vertex.example` to `.env` and fill your values:
+
+```bash
+cp .env.vertex.example .env
+```
+
+### 3) Start proxy with Vertex config
+This uses `config.vertex.yaml` which routes `vertex_ai/*` models.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.vertex.yml up --build
+```
+
+### 4) Test (OpenAI-compatible)
+```bash
+curl http://localhost:4000/v1/chat/completions \
+  -H "Authorization: Bearer sk-1234" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "vertex_ai/gemini-1.5-flash",
+    "messages": [{"role": "user", "content": "Hello from Vertex AI"}]
+  }'
+```
+
+### Notes
+- For `/v1/files` and `/v1/batches`, set `GCS_BUCKET_NAME` and `GCS_PATH_SERVICE_ACCOUNT` in `.env`.
+- Use any Vertex model by passing `model: "vertex_ai/<model-id>"`.
+
 # Enterprise
 For companies that need better security, user management and professional support
 
